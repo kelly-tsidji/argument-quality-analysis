@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argument Quality Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        /* Styling for the container that holds the form */
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+
+        /* Centering the main heading and setting color */
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Styling for labels in the form */
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Styling for textarea and text input fields */
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Styling for the submit button */
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Styling for the submit button when hovered */
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Styling for the result div that shows the prediction result */
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f3e7;
+            border-left: 6px solid #4CAF50;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Argument Quality Prediction</h1>
+        
+        <!-- Form for user to input argument and topic -->
+        <form id="argumentForm">
+            <label for="argument">Enter Argument:</label>
+            <textarea id="argument" name="argument" rows="4" cols="50"></textarea>
+            <label for="topic">Enter Topic:</label>
+            <input type="text" id="topic" name="topic">
+            <input type="submit" value="Get Score">
+        </form>
+
+        <!-- Div to display the result -->
+        <div class="result" id="result">
+            <h2>Argument Quality Score: <span id="percentage"></span></h2>
+            <p><span id="category"></span></p>
+        </div>
+    </div>
+    <script>
+        // JavaScript function to handle form submission
+        document.getElementById('argumentForm').onsubmit = async function(event) {
+            event.preventDefault();     // Prevent default form submission
+            const form = event.target;
+            const formData = new FormData(form);
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();                           // Get the JSON result from the server
+            const score = result.score;                                     // Extract the score
+            const percentage = (score * 100).toFixed(2) + '%';              // Convert score to percentage
+            document.getElementById('percentage').innerText = percentage;   // Display percentage
+
+            // Determine category based on score
+            let category;
+            if (score >= 0.8) {
+                category = "Excellent";
+            } else if (score >= 0.6) {
+                category = "Good";
+            } else if (score >= 0.4) {
+                category = "Fair";
+            } else if (score >= 0.2) {
+                category = "Poor";
+            } else {
+                category = "Bad";
+            }
+            document.getElementById('category').innerText = category;   // Display category
+
+            document.getElementById('result').style.display = 'block';  // Show the result div
+        }
+    </script>
+</body>
+</html>
