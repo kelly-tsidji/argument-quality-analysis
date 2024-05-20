@@ -1,0 +1,7 @@
+Flask==3.0.3
+torch==2.3.0
+transformers==4.40.2
+sentence-transformers==2.7.0
+pandas==2.2.2
+scikit-learn==1.4.2
+joblib==1.4.2
